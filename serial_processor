@@ -1,0 +1,25 @@
+import serial
+
+class SerialManager:
+
+    def __init__(self, config):
+        self.COM_PORT = config['COM_PORT']
+        self.BAUD_RATE = config['BAUD_RATE']
+
+
+    def init_serial(self):
+        self.ser = serial.Serial(self.COM_PORT, self.BAUD_RATE)
+
+
+    def read_from_serial(self):
+        if self.ser is None:
+            self.init_serial()
+        try:
+            line = self.ser.readline().decode('utf-8').strip()
+            return int(line)
+        except (ValueError, UnicodeDecodeError):
+            print("Received an invalid value from serial. Skipping...")
+            return None
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+            return None
